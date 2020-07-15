@@ -6,7 +6,9 @@ Auther is a simple sample ASP.NET Core WebAPI with only an External Authenticati
 
 All of the Authentication is configured in `Startup.ConfigureServices` in the `WebApi` project.
 
-Trying to access `{server}/Protected/MyInfo` will force you to authenticate through Slack if you haven't already.
+Trying to access `{server}/Protected/MyInfo` requires a JWT token to access.
+
+Going through `https://localhost:5001/Users/LoginWithSlack?redirectUrl=https://localhost:5001` will get you a JWT token after logging in with Slack.
 
 ## How do I try this out?
 
