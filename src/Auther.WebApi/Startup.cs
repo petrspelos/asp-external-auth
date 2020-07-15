@@ -19,6 +19,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Auther.WebApi
 {
@@ -36,11 +38,23 @@ namespace Auther.WebApi
             services.AddControllers();
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "Slack";
             })
             .AddCookie()
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = false, // might want to not validate audience if you're testing requests through for example postman
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration.GetValue<string>("Jwt:Issuer"),
+                    ValidAudience = Configuration.GetValue<string>("Jwt:Audience"),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("Jwt:EncryptionKey")))
+                };
+            })
             .AddOAuth("Slack",
                 options =>
                 {
@@ -48,8 +62,8 @@ namespace Auther.WebApi
                     options.Scope.Add("identity.basic");
                     options.Scope.Add("identity.avatar");
 
-                    options.CallbackPath = new PathString("/authorization-code/callback");
-                    
+                    options.CallbackPath = new PathString("/auth/oauthCallback");
+
                     options.ClientId = Configuration.GetValue<string>("Slack:ClientId");
                     options.ClientSecret = Configuration.GetValue<string>("Slack:ClientSecret");
                     options.TokenEndpoint = "https://slack.com/api/oauth.access";

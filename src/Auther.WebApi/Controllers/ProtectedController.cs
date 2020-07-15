@@ -11,10 +11,15 @@ namespace Auther.WebApi.Controllers
     public class ProtectedController : ControllerBase
     {
         [HttpGet("MyInfo")]
-        public object MyInfo() => new 
+        public IActionResult MyInfo()
         {
-            id = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value,
-            name = User.Claims.First(c => c.Type == ClaimTypes.Name).Value,
-        };
+            if(!User.Identity.IsAuthenticated) { return Unauthorized("Not Authenticated"); }
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            var userId = identity.Claims.FirstOrDefault(c => c.Type == "userid").Value;
+
+            return Ok(new { userId });
+        }
     }
 }
