@@ -48,8 +48,10 @@ The token will be in the URL after you go through the OAuth2 flow. Copy it and t
 
 ## Is this still being improved?
 
-Yes, while this works for basic usage, WebAPIs should rarely redirect to the OAuth2 flow on their own.
+~~Yes, while this works for basic usage, WebAPIs should rarely redirect to the OAuth2 flow on their own.~~
 
-Ideally, you'd get a generic "404 Unauthorized" response and you have to visit the initial OAuth2 page from your front-end application.
+~~Ideally, you'd get a generic "401 Unauthorized" response and you have to visit the initial OAuth2 page from your front-end application.~~
 
-The use of JwtBarer token would also be more appropriate rather than Secure Cookies.
+~~The use of JwtBarer token would also be more appropriate rather than Secure Cookies.~~
+
+Kinda, not providing a JWT token results in a 404 rather than 401 Unauthorized.
