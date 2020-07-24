@@ -72,6 +72,8 @@ namespace Auther.WebApi
                     options.ClaimActions.MapJsonSubKey(ClaimTypes.NameIdentifier, "user", "id");
                     options.ClaimActions.MapJsonSubKey(ClaimTypes.Name, "user", "name");
 
+                    options.AccessDeniedPath = "/Users/SlackAuthFailed";
+
                     options.Events = new OAuthEvents
                     {
                         OnCreatingTicket = async context =>

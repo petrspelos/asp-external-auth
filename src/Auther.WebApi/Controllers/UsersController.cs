@@ -22,6 +22,10 @@ namespace Auther.WebApi.Controllers
             _config = config;
         }
 
+        [HttpGet("SlackAuthFailed")]
+        [AllowAnonymous]
+        public IActionResult SlackAuthFailed() => Redirect(_config.GetValue<string>("Slack:AuthFailRedirectUrl"));
+
         [HttpGet("LoginWithSlack")]
         [Authorize(AuthenticationSchemes = "Slack")]
         public IActionResult LoginWithSlack(string redirectUrl)
